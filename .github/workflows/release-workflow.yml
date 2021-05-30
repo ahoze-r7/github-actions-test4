@@ -17,7 +17,7 @@ on:
 
 jobs:
   release:
-    #if: endsWith(github.ref, 'master') == true
+    if: endsWith(github.ref, 'master') == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -38,9 +38,6 @@ jobs:
           echo "github.ref (the branch or tag that trigget the event): $GITHUB_REF"
           echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
           echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
-      - name: Exit if master tag2
-        if: ${{ env.RELEASE_VERSION == 'master' }}
-        run: exit -1 
       - name: Exit if master tag
         if: endsWith(env.RELEASE_VERSION, 'master') == true
         run: exit -1 
