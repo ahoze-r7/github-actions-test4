@@ -9,8 +9,6 @@ on:
 #    tags:
   #    - 'DCV-*'
   push:
-    branches:
-      - "master"
     tags:
       - 'DCV-*'
 
@@ -38,6 +36,7 @@ jobs:
           echo "github.ref (the branch or tag that trigget the event): $GITHUB_REF"
           echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
           echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
+      # added this step in order to prevent 'master' tag creation
       - name: Exit if master tag
         if: endsWith(env.RELEASE_VERSION, 'master') == true
         run: exit -1 
