@@ -8,10 +8,14 @@ on:
 #      - "!*"
 #    tags:
   #    - 'DCV-*'
-  release:
-    types:
-      - published
-  
+ # release:
+ #   types:
+ #     - published
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'DCV-*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
 jobs:
   release:
     if: endsWith(github.ref, 'master') == false
