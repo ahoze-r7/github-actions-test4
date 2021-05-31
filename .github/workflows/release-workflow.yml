@@ -10,13 +10,10 @@ on:
   #    - 'DCV-*'
   
   #push:
-  #  tags:
-  #    - 'DCV-*'
   release:
-      types:
-      - published
-      - created
-
+    tags:
+      - 'DCV-*'
+  
 jobs:
   release:
     if: endsWith(github.ref, 'master') == false
