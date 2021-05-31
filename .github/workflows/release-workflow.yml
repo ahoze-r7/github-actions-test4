@@ -1,4 +1,4 @@
-name: create release branch
+name: release app
 on:
 #  create: #trigger event when create tag for all branches
 #    tags:
@@ -8,11 +8,9 @@ on:
 #      - "!*"
 #    tags:
   #    - 'DCV-*'
-  
-  #push:
   release:
-    tags:
-      - 'DCV-*'
+    types:
+      - published
   
 jobs:
   release:
