@@ -27,6 +27,8 @@ jobs:
             - Second Change
           draft: true
           prerelease: false
+      - name: ls for files
+        run: ls -la
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         env:
