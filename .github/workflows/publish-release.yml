@@ -14,11 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: find and replace string in tag
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
+          find: 'ref/heads/'        # we want to remove ref/heads/ from source 
+          replace: ''               # and replace it with a blank string (ie. removing it)
+
       - uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
         with:
           text: ${{ github.ref }}
-          regex: '^DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
+          regex: '^/DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
           flags: gm
 
       - name: Create release
