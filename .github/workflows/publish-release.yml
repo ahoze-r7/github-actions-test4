@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: find and replace string in tag
+        id: tag
         uses: mad9000/actions-find-and-replace-string@2
         with:
           source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
@@ -24,7 +25,7 @@ jobs:
       - uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
         with:
-          text: ${{ github.ref }}
+          text: ${{ steps.tag.outputs.value }}
           regex: '^/DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
           flags: gm
 
