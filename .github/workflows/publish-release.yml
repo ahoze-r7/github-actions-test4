@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.ref }}
+          regex: '^DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
+          flags: gm
+
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
@@ -27,8 +35,9 @@ jobs:
             - Second Change
           draft: true
           prerelease: false
-      
+
       - name: Publish release
+        if: ${{ steps.regex-match.outputs.match != '' }}
         uses: StuYarrow/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
