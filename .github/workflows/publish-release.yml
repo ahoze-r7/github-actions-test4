@@ -41,6 +41,7 @@ jobs:
             Changes in this Release
             - First Change
             - Second Change
+            - match: ${{ steps.regex-match.outputs.match }}
           draft: true
           prerelease: false
 
