@@ -1,0 +1,54 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'DCV-*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: find and replace string in tag
+        id: tag
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
+          find: 'refs/tags/'        # we want to remove ref/heads/ from source 
+          replace: ''               # and replace it with a blank string (ie. removing it)
+
+      - uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ steps.tag.outputs.value }}
+          regex: '^DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
+          flags: gm
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+            - match: ${{ steps.regex-match.outputs.match }}
+          draft: true
+          prerelease: false
+
+      - name: Publish release
+        if: ${{ steps.regex-match.outputs.match != '' }} ## if it is RC version. for exmaple: DCV-3.2.1-RC it won't publish 
+        uses: StuYarrow/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          id: ${{ steps.create_release.outputs.id }}

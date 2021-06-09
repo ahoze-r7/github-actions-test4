@@ -1,54 +1,46 @@
 on:
-  push:
+  release:
     # Sequence of patterns matched against refs/tags
-    tags:
-      - 'DCV-*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    types:
+      - created
+      - published
+      - edited
 
-name: Create Release
+name: Publish Release
 
 jobs:
   build:
-    name: Create Release
+    name: Publish Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: find and replace string in tag
-        id: tag
-        uses: mad9000/actions-find-and-replace-string@2
-        with:
-          source: ${{ github.ref }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
-          find: 'refs/tags/'        # we want to remove ref/heads/ from source 
-          replace: ''               # and replace it with a blank string (ie. removing it)
-
-      - uses: actions-ecosystem/action-regex-match@v2
-        id: regex-match
-        with:
-          text: ${{ steps.tag.outputs.value }}
-          regex: '^DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
-          flags: gm
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Dump GitHub context
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-            - match: ${{ steps.regex-match.outputs.match }}
-          draft: true
-          prerelease: false
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "GITHUB_CONTEXT: $GITHUB_CONTEXT"
 
-      - name: Publish release
-        if: ${{ steps.regex-match.outputs.match != '' }} ## if it is RC version. for exmaple: DCV-3.2.1-RC it won't publish 
-        uses: StuYarrow/publish-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Latest Release
+        id: latest_version
+        uses: abatilo/release-info-action@v1.3.0
         with:
-          id: ${{ steps.create_release.outputs.id }}
+          owner: ahoze-r7
+          repo: github-actions-test4
+      
+      - name: Example of consumption of the output
+        env:
+          LATEST: ${{ steps.latest_version.outputs.latest_tag }}
+          LATEST_DATE: ${{ steps.latest_version.outputs.latest_tag_published_at }}
+        run: |
+          echo "Version $LATEST was released at $LATEST_DATE"
+
+#      - name: Publish release
+#        if: ${{ steps.regex-match.outputs.match != '' }} ## if it is RC version. for exmaple: DCV-3.2.1-RC it won't publish 
+#        uses: StuYarrow/publish-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          id: ${{ steps.create_release.outputs.id }}
+
