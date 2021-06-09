@@ -46,7 +46,7 @@ jobs:
           prerelease: false
 
       - name: Publish release
-        if: ${{ steps.regex-match.outputs.match != '' }}
+        if: ${{ steps.regex-match.outputs.match != '' }} ## if it is RC version. for exmaple: DCV-3.2.1-RC it won't publish 
         uses: StuYarrow/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
