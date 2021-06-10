@@ -48,6 +48,7 @@ jobs:
         with:
           repository: ahoze-r7/github-actions-workflows
           path: github-actions
+          ref: refs/tags/v1
           token: ${{ secrets.GITHUBACTIONS }}
       - name: ls for files
         run: ls -la
