@@ -1,4 +1,4 @@
-name: release app
+name: Release App - create branches
 on:
 #  create: #trigger event when create tag for all branches
 #    tags:
@@ -48,6 +48,7 @@ jobs:
         with:
           repository: ahoze-r7/github-actions-workflows
           path: github-actions
+          token: ${{ secrets.GITHUBACTIONS }}
       - name: ls for files
         run: ls -la
       - id: myCompositeAction
