@@ -22,19 +22,24 @@ jobs:
         run: |
           echo "GITHUB_CONTEXT: $GITHUB_CONTEXT"
 
-      - name: Get Latest Release
-        id: latest_version
-        uses: abatilo/release-info-action@v1.3.0
+      # remove 'refs/tags' from string, for example from '/refs/tags/DCV-3.0.1' the outout will be 'DCV-3.0.1'
+      - name: find and replace string in release
+        id: tag
+        uses: mad9000/actions-find-and-replace-string@2
         with:
-          owner: ahoze-r7
-          repo: github-actions-test4
-      
-      - name: Example of consumption of the output
-        env:
-          LATEST: ${{ steps.latest_version.outputs.latest_tag }}
-          LATEST_DATE: ${{ steps.latest_version.outputs.latest_tag_published_at }}
+          source: ${{ github.event.release.name }} # this translates to ref/heads/main on the main branch, but can be any arbitrary string 
+          find: 'Release '        # we want to remove ref/heads/ from source 
+          replace: ''               # and r
         run: |
-          echo "Version $LATEST was released at $LATEST_DATE"
+          echo "GITHUB_CONTEXT: $GITHUB_CONTEXT"
+
+      # check the output of the prev step
+      - name: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ steps.tag.outputs.value }}
+          regex: '^DCV-\d+[.]\d+[.]\d+$|^DCV-\d+[.]\d+[.]\d+[.]\d+$'
+          flags: gm
 
 #      - name: Publish release
 #        if: ${{ steps.regex-match.outputs.match != '' }} ## if it is RC version. for exmaple: DCV-3.2.1-RC it won't publish 
