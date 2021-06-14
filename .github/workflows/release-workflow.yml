@@ -23,8 +23,6 @@ jobs:
           echo "release tag/version: $RELEASE_VERSION"
           echo "release commit id: $RELEASE_HASH"
           echo "github.ref (the branch or tag that trigger the event): $GITHUB_REF"
-          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
-          echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
       - name: Checkout github-actions repo
         uses: actions/checkout@v2-beta
         with:
