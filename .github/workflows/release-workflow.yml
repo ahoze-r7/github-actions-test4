@@ -31,6 +31,7 @@ jobs:
           ref: refs/tags/v1
           token: ${{ secrets.GITHUBACTIONS }}
       - name: run create-release-branch-from-tag action
+        id: createReleaseBranchFromTagCompositeAction
         uses: ./github-actions/create-release-branch-from-tag
         with:
           releaseVersion: $RELEASE_VERSION
